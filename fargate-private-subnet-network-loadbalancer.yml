@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Deploy a service on AWS Fargate, hosted in a private subnet, but accessible via a private network load balancer
+Description: Deploy a skill tracker micro services on AWS Fargate, hosted in a private subnet, but accessible via a private network load balancer
 # based on the original cloudformation template created by Erin Mcgill and Nathan Peck.
 
 Metadata:
@@ -15,6 +15,8 @@ Metadata:
           - ContainerCpu
           - ContainerMemory
           - DesiredCount
+          - StackName
+          - AccountId
       - Label:
           default: "AZ configuration"
         Parameters:
@@ -56,15 +58,15 @@ Parameters:
       Type: String
     ServicePrefix:
       Type: String
-      Default: Fargate-service
+      Default: AdminService
       Description: A name for the Fargate service
     RepositoryURI:
       Type: String
-      Default: nginx
-      Description: The repository URI of the docker image that contains the application process that will handle the traffic for this service, ex. nginx
+      Default: 390368450688.dkr.ecr.ap-south-1.amazonaws.com/admin:latest
+      Description: The repository URI of the docker image that contains the application process that will handle the traffic for this service
     ContainerPort:
       Type: Number
-      Default: 80
+      Default: 8081
       Description: What port number the application inside the docker container is binding to
     ContainerCpu:
       Type: Number
@@ -88,14 +90,14 @@ Mappings:
   AWSAMIRegionMap:
     AMI:
       AWSNATHVM: amzn-ami-vpc-nat-hvm-2017.03.0.20170401-x86_64-ebs
-    us-gov-west-1:
+    ap-south-1:
       AWSNATHVM: ami-3f0a8f5e
 
 Conditions:
     NVirginiaRegionCondition:
       Fn::Equals:
       - !Ref AWS::Region
-      - us-east-1
+      - ap-south-1
 
 Resources:
 
